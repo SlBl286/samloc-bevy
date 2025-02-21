@@ -4,6 +4,7 @@ use bevy::prelude::*;
 use bevy_renet::renet::{ChannelConfig, ClientId, ConnectionConfig, SendType};
 use serde::{Deserialize, Serialize};
 pub const PROTOCOL_ID: u64 = 7;
+
 #[derive(Debug, Component)]
 pub struct Player {
     pub id: ClientId,
@@ -140,4 +141,9 @@ pub fn spawn_fireball(
             duration: Timer::from_seconds(1.5, TimerMode::Once),
         })
         .id()
+}
+pub fn despawn_screen<T: Component>(to_despawn: Query<Entity, With<T>>, mut commands: Commands) {
+    for entity in &to_despawn {
+        commands.entity(entity).despawn_recursive();
+    }
 }
