@@ -1,10 +1,7 @@
 use bevy::prelude::*;
 
-use crate::states::AppStates;
+use super::states::InGameState;
 
-pub fn game_setup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
-  
+pub fn game_setup(mut game_state: ResMut<NextState<InGameState>>) {
+    game_state.set(InGameState::CreateLobby);
 }

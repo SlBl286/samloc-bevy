@@ -5,7 +5,7 @@ use crate::states::AppStates;
 use super::{components::OnLoadingScreen, resources::SplashTimer};
 
 pub fn loading_setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let icon = asset_server.load("sprites/logo1.png");
+    let icon = asset_server.load("sprites/logo.png");
     // Display the logo
     commands
         .spawn((
