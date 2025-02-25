@@ -20,12 +20,12 @@ impl Plugin for NetworkPlugin {
         let current_time = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap();
         let client_id = current_time.as_millis() as u64;
         let authentication = ClientAuthentication::Unsecure {
-            server_addr: SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 5000),
+            server_addr: SocketAddr::new(IpAddr::V4(Ipv4Addr::new(192, 168, 0, 23)), 5000),
             client_id,
             user_data: None,
             protocol_id: 0,
         };
-        let socket = UdpSocket::bind("127.0.0.1:0").unwrap();
+        let socket = UdpSocket::bind("192.168.0.23:0").unwrap();
         let transport = NetcodeClientTransport::new(current_time, authentication, socket).unwrap();
         app.insert_resource(transport);
         app.add_systems(Update, receive_message_system);

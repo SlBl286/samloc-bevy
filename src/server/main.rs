@@ -16,7 +16,7 @@ fn main() {
 
     // Transport layer setup
     app.add_plugins(NetcodeServerPlugin);
-    let server_addr = "127.0.0.1:5000".parse().unwrap();
+    let server_addr = "0.0.0.0:5000".parse().unwrap();
     let socket = UdpSocket::bind(server_addr).unwrap();
     let server_config = ServerConfig {
         current_time: SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap(),
