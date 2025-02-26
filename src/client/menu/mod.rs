@@ -22,7 +22,7 @@ impl Plugin for MenuScreenPlugin {
         .init_state::<MenuState>()
         .add_systems(OnEnter(AppStates::MainMenu), menu_setup)
         // Systems to handle the main menu screen
-        .add_systems(OnEnter(MenuState::Main), main_menu_setup)
+        .add_systems(OnEnter(MenuState::Main), (main_menu_setup,spawn_audio))
         .add_systems(OnExit(MenuState::Main), despawn_screen::<OnMainMenuScreen>)
         // Systems to handle the settings menu screen
         // .add_systems(OnEnter(MenuState::Settings), settings_menu_setup)

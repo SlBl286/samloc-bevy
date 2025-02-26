@@ -1,6 +1,10 @@
 use bevy::prelude::*;
 
-use crate::{menu::enums::MenuButton, contants::{HOVERED_BUTTON, NORMAL_BUTTON, PRESSED_BUTTON, TEXT_COLOR}, states::AppStates};
+use crate::{
+    contants::{HOVERED_BUTTON, NORMAL_BUTTON, PRESSED_BUTTON, TEXT_COLOR},
+    menu::enums::MenuButton,
+    states::AppStates,
+};
 
 use super::{components::*, states::*};
 pub fn menu_setup(mut menu_state: ResMut<NextState<MenuState>>) {
@@ -43,15 +47,13 @@ pub fn main_menu_setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         ))
         .with_children(|parent| {
             parent
-                .spawn((
-                    Node {
-                        width: Val::Percent(100.0),
-                        height: Val::Percent(100.0),
-                        flex_direction: FlexDirection::Column,
-                        align_items: AlignItems::Center,
-                        ..default()
-                    },
-                ))
+                .spawn((Node {
+                    width: Val::Percent(100.0),
+                    height: Val::Percent(100.0),
+                    flex_direction: FlexDirection::Column,
+                    align_items: AlignItems::Center,
+                    ..default()
+                },))
                 .with_children(|parent| {
                     // Display the game name
                     parent.spawn((
@@ -92,7 +94,7 @@ pub fn main_menu_setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                             Button,
                             button_node.clone(),
                             BackgroundColor(NORMAL_BUTTON),
-                            MenuButton::Join
+                            MenuButton::Join,
                         ))
                         .with_children(|parent| {
                             let icon = asset_server.load("sprites/UI/join-lobby.png");
@@ -139,16 +141,17 @@ pub fn main_menu_setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         });
 }
 pub fn menu_action(
-    interaction_query: Query<
-        (&Interaction, &MenuButton),
-        (Changed<Interaction>, With<Button>),
-    >,
+    interaction_query: Query<(&Interaction, &MenuButton), (Changed<Interaction>, With<Button>)>,
     mut app_exit_events: EventWriter<AppExit>,
     mut menu_state: ResMut<NextState<MenuState>>,
     mut app_state: ResMut<NextState<AppStates>>,
+    music_box_query: Query<&AudioSink, With<ClickedAudio>>,
 ) {
     for (interaction, menu_button_action) in &interaction_query {
         if *interaction == Interaction::Pressed {
+            if let Ok(sink) = music_box_query.get_single() {
+                sink.play();
+            }
             match menu_button_action {
                 MenuButton::Quit => {
                     app_exit_events.send(AppExit::Success);
@@ -190,4 +193,18 @@ pub fn button_system(
             (Interaction::None, None) => NORMAL_BUTTON.into(),
         }
     }
+}
+pub fn spawn_audio(asset_server: Res<AssetServer>, mut commands: Commands) {
+    let audio = asset_server.load("sounds/click-a.ogg");
+
+    // Create an entity dedicated to playing our background music
+    commands.spawn((
+        ClickedAudio,
+        AudioPlayer::new(audio),
+        PlaybackSettings {
+            mode: bevy::audio::PlaybackMode::Once,
+            paused: true,
+            ..default()
+        },
+    ));
 }

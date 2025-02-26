@@ -16,3 +16,6 @@ pub struct OnSoundSettingsMenuScreen;
 
 #[derive(Component)]
 pub struct SelectedOption;
+
+#[derive(Component)]
+pub struct  ClickedAudio;

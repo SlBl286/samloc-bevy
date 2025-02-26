@@ -1,9 +1,11 @@
 use std::time::Duration;
 
 use bevy::prelude::*;
-use bevy_renet::renet::{ChannelConfig, ClientId, ConnectionConfig, SendType};
+use bevy_renet::renet::{ChannelConfig, ClientId, SendType};
 use serde::{Deserialize, Serialize};
 pub const PROTOCOL_ID: u64 = 7;
+
+
 
 #[derive(Debug, Component)]
 pub struct Player {
@@ -109,39 +111,7 @@ impl ServerChannel {
         ]
     }
 }
-#[derive(Debug, Component)]
-pub struct Projectile {
-    pub duration: Timer,
-}
-pub fn connection_config() -> ConnectionConfig {
-    ConnectionConfig {
-        available_bytes_per_tick: 1024 * 1024,
-        client_channels_config: ClientChannel::channels_config(),
-        server_channels_config: ServerChannel::channels_config(),
-    }
-}
-pub fn spawn_fireball(
-    commands: &mut Commands,
-    meshes: &mut ResMut<Assets<Mesh>>,
-    materials: &mut ResMut<Assets<StandardMaterial>>,
-    translation: Vec3,
-    mut direction: Vec3,
-) -> Entity {
-    if !direction.is_normalized() {
-        direction = Vec3::X;
-    }
-    commands
-        .spawn((
-            Mesh3d(meshes.add(Sphere { radius: 0.1 })),
-            MeshMaterial3d(materials.add(Color::srgb(1.0, 0.0, 0.0))),
-            Transform::from_translation(translation),
-        ))
-        .insert(Velocity(direction * 10.))
-        .insert(Projectile {
-            duration: Timer::from_seconds(1.5, TimerMode::Once),
-        })
-        .id()
-}
+
 pub fn despawn_screen<T: Component>(to_despawn: Query<Entity, With<T>>, mut commands: Commands) {
     for entity in &to_despawn {
         commands.entity(entity).despawn_recursive();
